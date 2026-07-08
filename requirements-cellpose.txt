@@ -1,0 +1,4 @@
+# Heavy foundation-model stack for the Cellpose-SAM step.
+# Too large for free hosting tiers — install locally or on Kaggle/Colab GPU.
+torch>=2.1
+cellpose>=4.0

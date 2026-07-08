@@ -9,6 +9,10 @@ truth.
 Built to run on a **CPU-only 8 GB laptop**; the foundation-model step runs on
 **free Colab/Kaggle GPU**.
 
+**🔬 Live demo:** deploy the interactive tool for free on Streamlit Community
+Cloud (main file: `streamlit_app.py`) — upload a microscopy tile and get
+segmentation + per-cell morphology in the browser.
+
 ---
 
 ## Why this project
@@ -58,9 +62,9 @@ tools.
 ### 1. Install (laptop, CPU)
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
-pip install opencv-python-headless scikit-image pandas matplotlib gradio
-# Cellpose-SAM is optional locally; install it on Colab/Kaggle instead:
-# pip install torch cellpose
+pip install -r requirements.txt              # light stack (OpenCV pipeline + demos)
+# Cellpose-SAM foundation model (heavy — local or Kaggle/Colab GPU only):
+pip install -r requirements-cellpose.txt
 ```
 
 ### 2. Verify it works (no dataset needed)
