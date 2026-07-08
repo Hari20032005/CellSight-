@@ -3,10 +3,11 @@
 Everything here runs on Kaggle's servers (free P100/T4), not your laptop.
 
 Two deliberate choices that matter:
-  * We DO NOT reinstall torch. Kaggle's image already ships a GPU-matched
-    PyTorch; `pip install cellpose` would pull a PyPI torch whose CUDA kernels
-    don't match the node ("no kernel image available"). So we install cellpose
-    with --no-deps and add only its small pure-Python deps.
+  * We DO NOT reinstall torch (install cellpose with --no-deps + small pure
+    deps), and we run Cellpose-SAM on CPU. Kaggle's GPU node throws
+    "CUDA error: no kernel image available" when loading the SAM/ViT weights
+    (a torch<->GPU arch mismatch on Kaggle's side). For 5 small tiles, CPU
+    inference is reliable and produces identical masks/metrics.
   * Repo + dataset live in /tmp (NOT /kaggle/working), so Kaggle only captures
     the tiny outputs/ folder as the downloadable result.
 """
@@ -41,9 +42,9 @@ sh(f"curl -sL -o /tmp/s.zip "
    f"https://data.broadinstitute.org/bbbc/BBBC038/stage1_train.zip")
 sh(f"mkdir -p {DATA} && unzip -q /tmp/s.zip -d {DATA}")
 
-# 4. Run classical + Cellpose-SAM on the same 5 tiles, on GPU
+# 4. Run classical + Cellpose-SAM on the same 5 tiles (CPU, reliable)
 sh(f"cd {REPO} && {sys.executable} scripts/run_pipeline.py "
-   f"--data {DATA} --limit 5 --cellpose --gpu --out {OUT}")
+   f"--data {DATA} --limit 5 --cellpose --out {OUT}")
 
 # 5. Echo the headline tables into the kernel log
 for name in ("summary_metrics.csv", "results.csv"):
