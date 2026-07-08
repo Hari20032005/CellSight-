@@ -1,0 +1,18 @@
+# Core scientific stack (CPU-friendly, runs on an 8 GB laptop)
+numpy>=1.24
+scipy>=1.10
+opencv-python>=4.8
+scikit-image>=0.22
+pandas>=2.0
+matplotlib>=3.7
+tifffile>=2024.1
+imagecodecs>=2024.1
+
+# Demo UI
+gradio>=4.0
+
+# Deep-learning foundation model (Cellpose v4 == Cellpose-SAM).
+# On the laptop this installs the CPU build; on Colab/Kaggle it uses the GPU.
+# Install torch first from the correct index if you need a specific CUDA build.
+torch>=2.1
+cellpose>=4.0
