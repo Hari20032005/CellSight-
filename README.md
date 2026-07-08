@@ -106,24 +106,28 @@ Keep tiles ≤512 px and batch size 1–2 to stay inside free-tier limits.
 
 ## Results
 
-Measured on 5 real DSB-2018 microscopy tiles (`scripts/run_pipeline.py --limit 5`),
-custom OpenCV pipeline vs. ground truth:
+Measured on the **same 5 real DSB-2018 microscopy tiles**, both methods vs.
+ground truth. Custom OpenCV pipeline ran locally (CPU); Cellpose-SAM ran headless
+on a free Kaggle kernel ([`kaggle_kernel/`](kaggle_kernel/)).
 
 | Method | Dice | IoU | instance mAP | mean cell-count error |
 |---|---|---|---|---|
-| OpenCV watershed (custom) | **0.78** | 0.64 | 0.22 | 18.6 |
-| Cellpose-SAM | _run on Colab → paste here_ | | | |
+| **Cellpose-SAM** (foundation model) | **0.889** | **0.804** | **0.482** | **6.6** |
+| OpenCV watershed (custom) | 0.78 | 0.64 | 0.22 | 18.6 |
 
-**Insight:** the custom pipeline is strong on sparse tiles (Dice up to 0.88) but
-**under-segments dense clusters** — e.g. 35 detected vs. 70 ground-truth nuclei
-on a crowded tile — which drags down instance mAP. This is exactly where the
-Cellpose-SAM foundation model helps, motivating a **hybrid**: cheap classical
-enhancement + a foundation model where cell density is high. Fill in the
-Cellpose-SAM row after running [`notebooks/cellsight_colab.ipynb`](notebooks/cellsight_colab.ipynb).
+**Insight:** the custom pipeline is competitive on sparse tiles (Dice up to 0.88)
+but **under-segments dense clusters**, which craters its instance mAP and
+cell-count accuracy. Cellpose-SAM closes exactly that gap — it more than doubles
+instance mAP (0.48 vs 0.22) and cuts cell-count error ~3× (6.6 vs 18.6). The
+clearest case is a crowded tile with **70** ground-truth nuclei: the watershed
+finds **35**, Cellpose-SAM finds **71**. Practical takeaway: a **hybrid** —
+cheap classical enhancement + a foundation model where cell density is high.
 
-Example overlay (custom pipeline, 33 nuclei detected):
+Dense tile (70 true nuclei) — custom watershed (35 detected) vs. Cellpose-SAM (71):
 
-![overlay](assets/example_overlay.png)
+| OpenCV watershed | Cellpose-SAM |
+|---|---|
+| ![classical](assets/dense_classical.png) | ![cellpose](assets/dense_cellpose.png) |
 
 ---
 
