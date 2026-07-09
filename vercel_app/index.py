@@ -32,6 +32,11 @@ def appjs():
     return send_file(os.path.join(HERE, "app.js"), mimetype="application/javascript")
 
 
+@app.route("/example.png")
+def example():
+    return send_file(os.path.join(HERE, "example.png"), mimetype="image/png")
+
+
 @app.route("/healthz")
 def healthz():
     return "ok", 200

@@ -38,6 +38,25 @@ drop.addEventListener("drop", (e) => {
   if (f) { fileInput.files = e.dataTransfer.files; fileInput.dispatchEvent(new Event("change")); }
 });
 
+const sampleBtn = document.getElementById("sample");
+sampleBtn.addEventListener("click", async () => {
+  setStatus("Loading sample image…");
+  try {
+    const blob = await (await fetch("/example.png")).blob();
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      dataUri = e.target.result;
+      dropText.textContent = "✅ sample: fluorescence nuclei tile";
+      runBtn.disabled = false;
+      setStatus("");
+      runBtn.click(); // auto-analyze so a visitor sees a result immediately
+    };
+    reader.readAsDataURL(blob);
+  } catch (err) {
+    setStatus("Could not load sample: " + err.message, true);
+  }
+});
+
 runBtn.addEventListener("click", async () => {
   if (!dataUri) return;
   runBtn.disabled = true;
