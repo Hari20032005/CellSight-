@@ -9,9 +9,10 @@ truth.
 Built to run on a **CPU-only 8 GB laptop**; the foundation-model step runs on
 **free Colab/Kaggle GPU**.
 
-**🔬 Live demo:** deploy the interactive tool for free on Streamlit Community
-Cloud (main file: `streamlit_app.py`) — upload a microscopy tile and get
-segmentation + per-cell morphology in the browser.
+**🔬 Live demo: https://vercelapp-pied.vercel.app** — upload a microscopy tile
+and get segmentation + per-cell morphology in the browser (custom OpenCV pipeline,
+hosted free on Vercel; see [`vercel_app/`](vercel_app/)). A Streamlit version
+(`streamlit_app.py`) is also included.
 
 ---
 
