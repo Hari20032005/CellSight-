@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CellSight — Microscopy Cell Segmentation & Quantification</title>
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔬</text></svg>" />
+</head>
+<body>
+  <!-- HERO -->
+  <header class="hero">
+    <div class="wrap">
+      <div class="badge">Biomedical Imaging · Computer Vision</div>
+      <h1>🔬 CellSight</h1>
+      <p class="tagline">
+        An end-to-end pipeline that <b>enhances</b> a microscopy image,
+        <b>segments</b> individual cell nuclei, and <b>quantifies</b> their
+        morphology — a custom OpenCV algorithm benchmarked against the
+        Cellpose-SAM foundation model.
+      </p>
+      <div class="cta">
+        <a href="#demo" class="btn primary">Try the live demo</a>
+        <a href="https://github.com/Hari20032005/CellSight-" class="btn ghost" target="_blank" rel="noopener">View code on GitHub</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HOW IT WORKS -->
+  <section class="section">
+    <div class="wrap">
+      <h2>How it works</h2>
+      <p class="lead">
+        CellSight turns a raw microscopy tile into per-cell measurements in four
+        stages. The live demo below runs the custom OpenCV pipeline in real time.
+      </p>
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <h3>Enhance</h3>
+          <p>Correct uneven microscope illumination, boost local contrast with
+             <b>CLAHE</b>, and remove sensor noise with <b>Non-Local-Means</b>
+             denoising.</p>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <h3>Segment</h3>
+          <p>A custom <b>marker-controlled watershed</b> uses the distance
+             transform to split even <b>touching</b> nuclei into separate
+             instances — not just a threshold mask.</p>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <h3>Quantify</h3>
+          <p>For every nucleus, extract <b>area, perimeter, eccentricity,
+             solidity, intensity</b> and a total cell count — the
+             "featurization" step.</p>
+        </div>
+        <div class="step">
+          <div class="num">4</div>
+          <h3>Evaluate</h3>
+          <p>Benchmark against ground truth with <b>Dice, IoU and instance
+             mAP</b>, and compare the classical pipeline to the Cellpose-SAM
+             foundation model.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEMO -->
+  <section class="section alt" id="demo">
+    <div class="wrap">
+      <h2>Live demo</h2>
+      <p class="lead">
+        Upload a microscopy nuclei tile (e.g. a
+        <a href="https://bbbc.broadinstitute.org/BBBC038" target="_blank" rel="noopener">DSB-2018 / BBBC038</a>
+        image). Runs the custom OpenCV pipeline on a serverless function.
+      </p>
+
+      <div class="demo-grid">
+        <div class="panel">
+          <label class="drop" id="drop">
+            <input type="file" id="file" accept="image/*" hidden />
+            <span id="dropText">📤 Click to upload a microscopy image</span>
+          </label>
+          <button class="btn primary full" id="run" disabled>Analyze</button>
+          <p class="hint">Tip: fluorescence or brightfield nuclei tiles work best.
+             Large images are auto-resized.</p>
+        </div>
+
+        <div class="panel results" id="results" hidden>
+          <div class="imgs">
+            <figure><img id="inImg" alt="input" /><figcaption>Input</figcaption></figure>
+            <figure><img id="outImg" alt="overlay" /><figcaption>Segmentation</figcaption></figure>
+          </div>
+          <div class="metrics" id="metrics"></div>
+          <button class="btn ghost small" id="csv" hidden>⬇️ Download per-cell CSV</button>
+        </div>
+      </div>
+      <div id="status" class="status"></div>
+    </div>
+  </section>
+
+  <!-- BENCHMARK -->
+  <section class="section" id="benchmark">
+    <div class="wrap">
+      <h2>Benchmark: custom pipeline vs. foundation model</h2>
+      <p class="lead">
+        Measured on 5 real DSB-2018 tiles vs. ground truth. Cellpose-SAM (a
+        SAM/ViT foundation model) was run offline on a free Kaggle kernel — it
+        needs ~2–3&nbsp;GB RAM, too heavy for a free live host, so it is reported
+        here rather than run in the browser.
+      </p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>Method</th><th>Dice</th><th>IoU</th><th>Instance mAP</th><th>Cell-count error</th></tr>
+          </thead>
+          <tbody>
+            <tr class="win"><td>Cellpose-SAM (foundation model)</td><td>0.889</td><td>0.804</td><td>0.482</td><td>6.6</td></tr>
+            <tr><td>OpenCV watershed (custom, live here)</td><td>0.78</td><td>0.64</td><td>0.22</td><td>18.6</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">
+        <b>Insight:</b> the custom pipeline is competitive on sparse tiles but
+        under-segments dense clusters (e.g. finds 35 of 70 nuclei); Cellpose-SAM
+        closes that gap — more than 2× the instance mAP and ~3× lower cell-count
+        error. Practical takeaway: a hybrid — cheap classical enhancement plus a
+        foundation model where cell density is high.
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <p>CellSight · built with Python, OpenCV & Cellpose-SAM ·
+        <a href="https://github.com/Hari20032005/CellSight-" target="_blank" rel="noopener">GitHub</a></p>
+    </div>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>
