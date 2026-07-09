@@ -1,58 +1,71 @@
-# 3–5 min Video Script (Aganitha form requirement)
+# CellSight — Video Submission Script (Aganitha form)
 
-The form asks the video to cover four things. Hit them in order. Keep it ~4 min.
-Screen-record the Gradio demo + one overlay figure + the metrics table.
+Target length **~4 min** (form asks 3–5). Record 1080p, screen + mic (QuickTime/OBS).
 
----
-
-### 0:00–0:30 — Intro (who + what)
-> "Hi, I'm [Name], M.Tech at VIT. I built **CellSight**, an end-to-end computer
-> vision pipeline for microscopy cell segmentation and quantification — the same
-> kind of problem Aganitha's Microscopy Image Analysis solution tackles."
-
-### 0:30–1:15 — Datasets (form prompt #1)
-> "I worked with **fluorescence and brightfield microscopy** nuclei images from
-> the 2018 Data Science Bowl dataset, which ships pixel-level instance masks as
-> ground truth. Tiles are 256–512 px, so everything fits on my 8 GB laptop; the
-> GPU step runs free on Colab."
-
-Show: a raw tile next to its ground-truth overlay.
-
-### 1:15–2:30 — Techniques (form prompt #2)
-> "I segment nuclei **two ways**. First, a **custom OpenCV pipeline** I wrote:
-> illumination correction, CLAHE contrast enhancement, and Non-Local-Means
-> denoising, then a **marker-controlled watershed** using the distance transform
-> to split touching nuclei. Second, I apply **Cellpose-SAM**, a vision foundation
-> model with a SAM/ViT transformer backbone, for zero-shot instance masks."
-
-Show: the enhancement stages, then both overlays side by side.
-
-### 2:30–3:15 — Pipeline (form prompt #3)
-> "The full pipeline is enhance → segment → **featurize** → evaluate. For every
-> nucleus I extract morphology — area, perimeter, eccentricity, solidity, mean
-> intensity — with scikit-image regionprops, and export a per-cell CSV plus a
-> cell count. It's modular Python; a Gradio app runs the whole thing on an
-> uploaded image."
-
-Show: Gradio demo — upload a tile → overlay + cell count + feature table.
-
-### 3:15–4:15 — Result / insight (form prompt #4)
-> "I benchmarked both methods against ground truth with **Dice, IoU, and
-> instance-level mean Average Precision** (the DSB metric). Key insight: the
-> custom watershed pipeline is fast and competitive on well-separated nuclei but
-> **merges touching cells**; Cellpose-SAM separates dense clusters far better,
-> raising instance mAP by [X]. So the practical answer is a **hybrid** — cheap
-> classical preprocessing plus a foundation model where cell density is high."
-
-Show: the `summary_metrics.csv` table; point at the mAP / count-error columns.
-
-### 4:15–4:30 — Close
-> "Everything's on GitHub with a reproducible smoke test and a Colab notebook.
-> I'd love to bring this to Aganitha's biomedical imaging work. Thank you!"
+## Before recording — open 3 tabs
+1. Live demo: https://vercelapp-pied.vercel.app
+2. GitHub repo: https://github.com/Hari20032005/CellSight- (pre-scroll to **Results**)
+3. VS Code with `src/classical_pipeline.py` open
 
 ---
 
-**Recording tips**
-- Fill in `[X]` with your real numbers after running `scripts/run_pipeline.py`.
-- Record at 1080p, share screen, talk over it — no need to show your face the whole time.
-- Upload to Google Drive / YouTube (unlisted) with **open access**, paste the link in the form.
+## SCRIPT (with on-screen cues)
+
+**[0:00–0:25] Intro** — *your face or a "CellSight" title card*
+> "Hi, I'm [Name], an M.Tech student at VIT. I'll walk you through CellSight — an
+> end-to-end computer-vision pipeline I built for microscopy cell segmentation
+> and quantification, exactly the kind of problem Aganitha's Microscopy Image
+> Analysis work tackles."
+
+**[0:25–1:05] ① Datasets** — *live site; click "Try a sample image"*
+> "I worked with fluorescence and brightfield microscopy nuclei images from the
+> 2018 Data Science Bowl, also known as BBBC038. Each image comes with
+> pixel-level instance masks as ground truth. Here's a real tile from that
+> dataset loaded into my live demo."
+
+**[1:05–2:05] ② Techniques** — *input-vs-overlay result, then classical_pipeline.py*
+> "I segment the nuclei two ways. The first is a custom OpenCV pipeline I wrote
+> myself: correct uneven illumination, enhance contrast with CLAHE, denoise with
+> Non-Local-Means, then a marker-controlled watershed that uses the distance
+> transform to separate touching nuclei — you can see each cell outlined here.
+> This is my own algorithm, not an off-the-shelf call. The second method is
+> Cellpose-SAM — a vision foundation model with a SAM Vision-Transformer
+> backbone — which I applied and evaluated on a free Kaggle GPU."
+
+**[2:05–2:50] ③ Pipeline** — *live demo metrics + per-cell table + CSV*
+> "The full pipeline is enhance, segment, featurize, then evaluate. For every
+> nucleus I extract morphology — area, perimeter, eccentricity, solidity, and
+> intensity — plus a cell count. On this sample it found 33 nuclei, and the
+> per-cell features export as CSV. It's deployed as a live web app on Vercel with
+> a Python serverless backend."
+
+**[2:50–3:40] ④ Result / insight** — *README benchmark table + dense-tile figure*
+> "I benchmarked both methods against ground truth using Dice, IoU, and
+> instance-level mean Average Precision. Cellpose-SAM reached a Dice of 0.889
+> versus my classical pipeline's 0.78, and more than doubled the instance mAP.
+> The telling case is a dense tile with 70 true nuclei: my watershed finds 35,
+> Cellpose-SAM finds 71. The insight: the classical pipeline is fast and
+> competitive on sparse images but under-segments crowded ones — so the practical
+> answer is a hybrid: cheap classical preprocessing plus a foundation model where
+> cell density is high."
+
+**[3:40–4:00] Close** — *GitHub repo home*
+> "Everything is open-source on GitHub, with a reproducible Kaggle benchmark and
+> the live demo you just saw. I'd be excited to bring this to Aganitha's
+> biomedical imaging work. Thank you."
+
+---
+
+## 4 required points — checklist
+- Imaging datasets → 0:25 (DSB-2018 / BBBC038 microscopy nuclei)
+- CV / DL techniques → 1:05 (OpenCV watershed + Cellpose-SAM foundation model)
+- How you built the pipeline → 2:05 (enhance→segment→featurize→evaluate, deployed)
+- One result / insight → 2:50 (Dice 0.889 vs 0.78; 35-vs-71 dense-tile hybrid insight)
+
+## Honesty guardrails
+- Say Cellpose-SAM is a model you **applied and evaluated** — never "trained".
+- Lead with the OpenCV pipeline as **your own algorithm** (the JD's "custom algorithm").
+
+## After recording
+Upload to Google Drive / YouTube (unlisted) → sharing = "Anyone with the link" →
+paste in the form's video field.
